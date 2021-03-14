@@ -1,0 +1,6 @@
+CREATE TABLE Book(
+  id Long AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(100),
+  title VARCHAR(100),
+  title BIGINT
+);
