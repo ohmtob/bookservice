@@ -34,7 +34,7 @@ public class BookController {
     }*/
 
 
-    @GetMapping("/book/{id}")
+    @GetMapping(path ="/book/{id}")
     Book getSingle(@PathVariable Long id){
         return  repository.findById(id).get();
     }
@@ -42,7 +42,7 @@ public class BookController {
         return repository.findById(id).get();
     }*/
 
-    @PostMapping(value = "/book", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "/book", consumes = "application/json", produces = "application/json")
     ResponseEntity<Object> add(@RequestBody Book b){
         repository.save(b);
 
@@ -53,6 +53,23 @@ public class BookController {
                 return  ResponseEntity.created( location ).build();
 
     }
+
+    @PutMapping(path = "/book/{id}", consumes = "application/json", produces = "application/json")
+    Book update(@PathVariable Long id, @RequestBody Book updateBook){
+        Book dbBook = repository.findById(id).get();
+        dbBook.setTitle(updateBook.getTitle());
+        dbBook.setAuthor(updateBook.getAuthor());
+        dbBook.setPrice(updateBook.getPrice());
+        repository.save(dbBook);
+        return dbBook;
+    }
+
+    @DeleteMapping(path = "/book/{id}")
+    public void delete(@PathVariable Long id) {
+        repository.deleteById(id);
+    }
+
+
 /*    public Book post(@RequestBody Book book) {
         return repository.save(book);
 
@@ -62,14 +79,14 @@ public class BookController {
 
     }*/
 
-    @PutMapping("/book/{id}")
+/*    @PutMapping("/book/{id}")
     public Book put(@PathVariable Long id, @RequestBody Book book) {
         return repository.save(book);
-    }
+    }*/
 
-    @DeleteMapping("/book/{id}")
+/*    @DeleteMapping("/book/{id}")
     public void delete(@PathVariable Long id) {
         repository.deleteById(id);
-    }
+    }*/
 
 }
