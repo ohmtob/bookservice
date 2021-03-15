@@ -1,5 +1,6 @@
 package com.example.bookservice;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,7 +8,9 @@ import java.util.List;
 //import org.springframework.web.bind.annotation.RestController;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
 @RestController
@@ -17,20 +20,47 @@ public class BookController {
     BookRepository repository;
 
 
-    @GetMapping("/book")
-    public List<Book> books() {
-        return (List<Book>)repository.findAll();
+    @GetMapping(path = "/book")
+    List<Book> getAll(){
+        var l = new ArrayList<Book>();
+        for(Book r : repository.findAll())
+        {
+            l.add(r);
+        }
+        return l;
     }
+/*    public List<Book> books() {
+        return (List<Book>)repository.findAll();
+    }*/
+
 
     @GetMapping("/book/{id}")
-    public Book books(@PathVariable Long id) {
+    Book getSingle(@PathVariable Long id){
+        return  repository.findById(id).get();
+    }
+  /*  public Book books(@PathVariable Long id) {
         return repository.findById(id).get();
-    }
+    }*/
 
-    @PostMapping("/book")
-    public Book post(@RequestBody Book book) {
-        return repository.save(book);
+    @PostMapping(value = "/book", consumes = "application/json", produces = "application/json")
+    ResponseEntity<Object> add(@RequestBody Book b){
+        repository.save(b);
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path( "/{id}" )
+                .buildAndExpand( b.getId() )
+                .toUri();
+                return  ResponseEntity.created( location ).build();
+
     }
+/*    public Book post(@RequestBody Book book) {
+        return repository.save(book);
+
+
+
+
+
+    }*/
 
     @PutMapping("/book/{id}")
     public Book put(@PathVariable Long id, @RequestBody Book book) {
